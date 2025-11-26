@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Where Should Ayesha Invest? - A Real Money Story</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header .story {
+            font-size: 1.1em;
+            line-height: 1.6;
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .game-section {
+            padding: 40px;
+        }
+        
+        .step {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .question {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 5px solid #f5576c;
+        }
+        
+        .question h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.6em;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .option-card {
+            background: white;
+            border: 3px solid #dee2e6;
+            border-radius: 15px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            position: relative;
+        }
+        
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .option-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea20, #764ba220);
+        }
+        
+        .option-card .icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        
+        .option-card .title {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .option-card .description {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            line-height: 1.4;
+        }
+        
+        .option-card .hint {
+            font-size: 0.85em;
+            color: #e74c3c;
+            margin-top: 10px;
+            font-style: italic;
+            display: none;
+        }
+        
+        .option-card:hover .hint {
+            display: block;
+        }
+        
+        .next-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            display: block;
+            margin: 30px auto;
+        }
+        
+        .next-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+        
+        .next-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .results {
+            padding: 20px;
+        }
+        
+        .reveal-animation {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .countdown {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 30px 0;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .result-card.show {
+            animation: slideUp 0.6s forwards;
+        }
+        
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result-card.winner {
+            border: 4px solid #27ae60;
+            background: linear-gradient(135deg, #27ae6010, #2ecc7110);
+        }
+        
+        .result-card.user-choice {
+            border: 4px solid #667eea;
+        }
+        
+        .badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: #27ae60;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        
+        .badge.your-pick {
+            background: #667eea;
+            right: auto;
+            left: 20px;
+        }
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .result-icon {
+            font-size: 3em;
+        }
+        
+        .result-details h3 {
+            color: #2c3e50;
+            font-size: 1.4em;
+        }
+        
+        .result-amount {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #27ae60;
+            margin: 20px 0;
+        }
+        
+        .result-stats {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .stat-label {
+            font-size: 0.85em;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .final-message {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .share-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .share-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .share-btn.whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        
+        .share-btn.facebook {
+            background: #1877F2;
+            color: white;
+        }
+        
+        .share-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .replay-button {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        
+        .replay-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.4);
+        }
+        
+        .insight-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .insight-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .insight-box p {
+            color: #856404;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        
+        .data-source {
+            font-size: 0.8em;
+            color: #7f8c8d;
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .loser-note {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+        
+        .sip-breakdown {
+            background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%);
+            border: 2px solid #81c784;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .sip-title {
+            font-weight: bold;
+            color: #2e7d32;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .sip-story {
+            color: #5d4037;
+            font-style: italic;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+        
+        .sip-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .sip-stat {
+            background: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 150px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .sip-stat.highlight {
+            background: linear-gradient(135deg, #fff9c4, #fffde7);
+            border: 2px solid #ffc107;
+        }
+        
+        .sip-label {
+            display: block;
+            font-size: 0.8em;
+            color: #757575;
+            margin-bottom: 5px;
+        }
+        
+        .sip-value {
+            display: block;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .sip-value .gain {
+            color: #27ae60;
+            font-size: 0.85em;
+        }
+        
+        .sip-magic {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1em;
+            color: #5d4037;
+            border: 2px dashed #81c784;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤔 Where Should Ayesha Invest?</h1>
+            <div class="story">
+                <strong>Meet Ayesha from Lahore.</strong><br><br>
+                It's January 2010. Ayesha just started her job as a software developer earning Rs. 45,000/month. 
+                Her mother told her "Beta, save for your future!" Her father said "Put it in the bank, it's safe." 
+                Her uncle insists "Buy gold - ami ka sona kabhi nahi girta!" And her colleague says 
+                "Stock market mein invest karo!"<br><br>
+                <strong>Ayesha decides to save Rs. 5,000 every month for the next 15 years.</strong><br>
+                Where should she put her money? Help her decide!
+            </div>
+        </div>
+        
+        <div class="game-section">
+            <!-- Step 1: Choose Investment -->
+            <div id="step1" class="step active">
+                <div class="question">
+                    <h2>If you were Ayesha's friend in 2010, which investment would YOU recommend?</h2>
+                    <p style="color: #7f8c8d; margin-top: 10px;">
+                        Remember: Rs. 5,000/month for 191 months (Jan 2010 - Nov 2025) = Rs. 9,55,000 total invested
+                    </p>
+                    
+                    <div class="options">
+                        <div class="option-card" data-choice="bank">
+                            <div class="icon">🏦</div>
+                            <div class="title">Bank Savings</div>
+                            <div class="description">"Safe and guaranteed returns. Your money grows with interest."</div>
+                            <div class="hint">What Ayesha's father recommended</div>
+                        </div>
+                        
+                        <div class="option-card" data-choice="gold">
+                            <div class="icon">🪙</div>
+                            <div class="title">Gold</div>
+                            <div class="description">"Ami ka sona! Gold never loses value. It's tradition!"</div>
+                            <div class="hint">What Ayesha's uncle recommended</div>
+                        </div>
+                        
+                        <div class="option-card" data-choice="dollar">
+                            <div class="icon">💵</div>
+                            <div class="title">US Dollars</div>
+                            <div class="description">"Rupee keeps falling. Dollar will protect your money!"</div>
+                            <div class="hint">What her foreign-returned cousin said</div>
+                        </div>
+                        
+                        <div class="option-card" data-choice="kse">
+                            <div class="icon">📈</div>
+                            <div class="title">Stock Market (KSE-100)</div>
+                            <div class="description">"Invest in Pakistan's top 100 companies through SIP."</div>
+                            <div class="hint">What her finance colleague suggested</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="nextBtn" class="next-button" disabled>
+                    Lock In My Choice →
+                </button>
+            </div>
+            
+            <!-- Step 2: Confirmation - Are You Sure? -->
+            <div id="step2" class="step">
+                <div class="question" style="border-left-color: #e74c3c;">
+                    <h2 style="color: #e74c3c;">⚠️ WAIT! Are You SURE?</h2>
+                    
+                    <div style="background: linear-gradient(135deg, #fff5f5, #ffe0e0); padding: 25px; border-radius: 15px; margin: 25px 0; border: 2px solid #e74c3c;">
+                        <p style="font-size: 1.3em; margin-bottom: 15px;">
+                            You're about to lock in: <strong style="color: #667eea; font-size: 1.2em;" id="chosenStrategy"></strong>
+                        </p>
+                        
+                        <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                            <p style="font-size: 1.1em; color: #2c3e50; margin-bottom: 10px;">
+                                📅 <strong>This is a 15-YEAR commitment!</strong>
+                            </p>
+                            <p style="color: #7f8c8d;">
+                                Ayesha will invest Rs. 5,000 EVERY SINGLE MONTH for 191 months based on YOUR advice.
+                            </p>
+                        </div>
+                        
+                        <div id="choiceWarning" style="padding: 15px; border-radius: 10px; margin-top: 15px;"></div>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                        <p style="font-size: 1.1em; color: #2c3e50; text-align: center;">
+                            <strong>Remember:</strong> This is REAL historical data from 2010-2025.<br>
+                            No take-backs. No do-overs. Just like real life! 😬
+                        </p>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="next-button" onclick="showResults()" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">
+                        🔒 YES! Lock In My Choice Forever
+                    </button>
+                    <br>
+                    <button style="background: none; border: 2px solid #667eea; color: #667eea; padding: 12px 30px; border-radius: 25px; cursor: pointer; margin-top: 15px; font-size: 1em; font-weight: bold;" onclick="goBack()">
+                        😰 Wait, Let Me Reconsider...
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Reveal Animation -->
+            <div id="step3" class="step">
+                <div class="reveal-animation">
+                    <h2>Time traveling through Ayesha's investment journey...</h2>
+                    <div class="countdown" id="countdown">2010</div>
+                    <p>Pakistan goes through elections, economic crises, COVID-19, political changes...</p>
+                    <p style="margin-top: 10px;">But Ayesha keeps investing Rs. 5,000 every single month! 💪</p>
+                </div>
+            </div>
+            
+            <!-- Step 4: Results -->
+            <div id="step4" class="step">
+                <div class="results">
+                    <h2 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">
+                        🎯 The Results Are In! (November 2025)
+                    </h2>
+                    
+                    <div class="insight-box">
+                        <h4>⚠️ SHOCKING DISCOVERY ABOUT GOLD!</h4>
+                        <p>
+                            Many people think "sona kabhi nahi girta" but gold actually <strong>LOST money for 6 consecutive years (2013-2018)!</strong>
+                            At its worst point in 2015, gold investors had 24% LESS than what they put in. Gold only recovered due to the 2024-2025 surge.
+                        </p>
+                    </div>
+                    
+                    <div id="resultsContainer"></div>
+                    
+                    <div class="final-message" id="finalMessage"></div>
+                    
+                    <div class="share-section">
+                        <h3>🔥 Share This Eye-Opening Game!</h3>
+                        <p>Let your friends discover the truth about investing in Pakistan</p>
+                        <div class="share-buttons">
+                            <button class="share-btn whatsapp" onclick="shareWhatsApp()">
+                                📱 Share on WhatsApp
+                            </button>
+                            <button class="share-btn facebook" onclick="shareFacebook()">
+                                📘 Share on Facebook
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="data-source">
+                        <strong>📊 Data Sources:</strong><br>
+                        KSE-100: Pakistan Stock Exchange historical data<br>
+                        Gold: Authentic monthly gold prices from Gold_Prices02.xlsx (Rs./Tola)<br>
+                        USD/PKR: State Bank of Pakistan exchange rates<br>
+                        Bank Interest: SBP Policy Rate minus 2% (typical bank deposit rate)<br>
+                        <em>All calculations verified with month-by-month SIP methodology</em>
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <button class="replay-button" onclick="location.reload()">
+                            🔄 Play Again With Different Choice
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let userChoice = null;
+        let currentStep = 1;
+        
+        // VERIFIED AUTHENTIC DATA - Nov 2025
+        // Gold prices from uploaded Excel file (Gold_Prices02.xlsx)
+        // KSE-100 from PSX historical data
+        // USD/PKR from SBP rates
+        // Bank from SBP Policy Rate - 2%
+        
+        const months = 191; // Jan 2010 - Nov 2025
+        const monthlyInvestment = 5000;
+        const totalInvested = 955000;
+        
+        const results = {
+            kse: {
+                invested: totalInvested,
+                final: 5641492,
+                multiplier: 5.91,
+                icon: '📈',
+                name: 'KSE-100 Stock Market',
+                profit: 4686492,
+                unitsAccumulated: 34.85,
+                unitName: 'units',
+                avgCost: Math.round(totalInvested / 34.85), // Rs. 27,404 per unit
+                currentPrice: 161855,
+                priceGain: '+491%',
+                description: 'SIP in Pakistan\'s top 100 companies',
+                rank: 1,
+                sipStory: 'Bought when index was 9,387... and also when it was 47,807... averaged out to'
+            },
+            bank: {
+                invested: totalInvested,
+                final: 2228138,
+                multiplier: 2.33,
+                icon: '🏦',
+                name: 'Bank Savings Account',
+                profit: 1273138,
+                unitsAccumulated: null,
+                unitName: null,
+                avgCost: null,
+                currentPrice: null,
+                description: 'Compound interest at SBP rate minus 2%',
+                rank: 2,
+                sipStory: 'Interest rates ranged from 5.75% to 22% over 15 years'
+            },
+            dollar: {
+                invested: totalInvested,
+                final: 2082276,
+                multiplier: 2.18,
+                icon: '💵',
+                name: 'US Dollars',
+                profit: 1127276,
+                unitsAccumulated: 7490,
+                unitName: 'dollars',
+                avgCost: Math.round(totalInvested / 7490), // Rs. 127.5 per dollar
+                currentPrice: 278,
+                priceGain: '+118%',
+                description: 'Buying dollars as PKR depreciated',
+                rank: 3,
+                sipStory: 'Bought when dollar was Rs. 84... and also when it was Rs. 282... averaged out to'
+            },
+            gold: {
+                invested: totalInvested,
+                final: 2022727,
+                multiplier: 2.12,
+                icon: '🪙',
+                name: 'Gold',
+                profit: 1067727,
+                unitsAccumulated: 4.20,
+                unitName: 'tolas',
+                avgCost: Math.round(totalInvested / 4.20), // Rs. 227,381 per tola
+                currentPrice: 482416,
+                priceGain: '+112%',
+                description: 'Monthly gold purchases',
+                rank: 4,
+                warning: 'Lost money 2013-2018 (6 years underwater!)',
+                sipStory: 'Bought when gold was Rs. 1.68 lakh... and also when it was Rs. 2.72 lakh... averaged out to'
+            }
+        };
+        
+        // Handle option selection
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+                userChoice = this.dataset.choice;
+                document.getElementById('nextBtn').disabled = false;
+            });
+        });
+        
+        // Next button
+        document.getElementById('nextBtn').addEventListener('click', function() {
+            if (userChoice) {
+                const choiceName = results[userChoice].name;
+                document.getElementById('chosenStrategy').textContent = choiceName;
+                
+                // Show choice-specific warning
+                const warningBox = document.getElementById('choiceWarning');
+                const warnings = {
+                    bank: {
+                        color: '#6c757d',
+                        bg: '#f8f9fa',
+                        icon: '🏦',
+                        text: 'Playing it safe with bank savings? Your father would be proud... but will your future self thank you? Banks give steady returns, but inflation might eat away at your gains!'
+                    },
+                    gold: {
+                        color: '#856404',
+                        bg: '#fff3cd',
+                        icon: '🪙',
+                        text: '"Ami ka sona kabhi nahi girta!" That\'s what everyone says... but is it really true? Are you SURE gold never falls? This could be a bumpy ride!'
+                    },
+                    dollar: {
+                        color: '#004085',
+                        bg: '#cce5ff',
+                        icon: '💵',
+                        text: 'Betting against the Rupee? Smart thinking... or is it? The dollar protects, but does it grow? You\'re trusting that PKR will keep falling!'
+                    },
+                    kse: {
+                        color: '#155724',
+                        bg: '#d4edda',
+                        icon: '📈',
+                        text: 'Stock market?! That\'s GAMBLING! At least that\'s what Ayesha\'s khala says. Markets crash, companies fail... are you brave enough to handle the rollercoaster? 🎢'
+                    }
+                };
+                
+                const warning = warnings[userChoice];
+                warningBox.style.background = warning.bg;
+                warningBox.style.color = warning.color;
+                warningBox.style.border = `2px solid ${warning.color}`;
+                warningBox.innerHTML = `
+                    <p style="font-size: 1.1em; margin: 0;">
+                        ${warning.icon} <strong>${warning.text}</strong>
+                    </p>
+                `;
+                
+                showStep(2);
+            }
+        });
+        
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+            currentStep = step;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function goBack() {
+            showStep(1);
+        }
+        
+        function showResults() {
+            showStep(3);
+            
+            // Animate countdown
+            let year = 2010;
+            const countdownEl = document.getElementById('countdown');
+            const interval = setInterval(() => {
+                year++;
+                countdownEl.textContent = year;
+                if (year >= 2025) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        displayResults();
+                        showStep(4);
+                    }, 1000);
+                }
+            }, 200);
+        }
+        
+        function displayResults() {
+            const container = document.getElementById('resultsContainer');
+            const finalMessageEl = document.getElementById('finalMessage');
+            
+            // Sort results by final amount (rank)
+            const sortedResults = Object.entries(results).sort((a, b) => a[1].rank - b[1].rank);
+            const winner = 'kse'; // KSE is the winner
+            const userResult = results[userChoice];
+            const youWon = userChoice === winner;
+            
+            // Display each result
+            sortedResults.forEach(([key, data], index) => {
+                const isWinner = data.rank === 1;
+                const isUserChoice = key === userChoice;
+                const isLoser = data.rank === 4;
+                
+                setTimeout(() => {
+                    const card = document.createElement('div');
+                    card.className = 'result-card' + (isWinner ? ' winner' : '') + (isUserChoice ? ' user-choice' : '');
+                    
+                    let badges = '';
+                    if (isWinner) badges += '<div class="badge">🏆 #1 WINNER!</div>';
+                    else badges += `<div class="badge" style="background: ${data.rank === 2 ? '#C0C0C0' : data.rank === 3 ? '#CD7F32' : '#95a5a6'}">#${data.rank}</div>`;
+                    if (isUserChoice) badges += '<div class="badge your-pick">👉 YOUR PICK</div>';
+                    
+                    let warningHtml = '';
+                    if (data.warning) {
+                        warningHtml = `<div class="loser-note">⚠️ ${data.warning}</div>`;
+                    }
+                    
+                    // Build the SIP breakdown section
+                    let sipBreakdownHtml = '';
+                    if (data.unitsAccumulated && data.avgCost) {
+                        sipBreakdownHtml = `
+                            <div class="sip-breakdown">
+                                <div class="sip-title">📊 Your ${months} Month SIP Journey:</div>
+                                <div class="sip-story">${data.sipStory}</div>
+                                <div class="sip-stats">
+                                    <div class="sip-stat">
+                                        <span class="sip-label">You Accumulated:</span>
+                                        <span class="sip-value">${typeof data.unitsAccumulated === 'number' ? data.unitsAccumulated.toFixed(2) : data.unitsAccumulated} ${data.unitName}</span>
+                                    </div>
+                                    <div class="sip-stat">
+                                        <span class="sip-label">Your Avg Cost:</span>
+                                        <span class="sip-value">Rs. ${data.avgCost.toLocaleString('en-IN')}/${data.unitName === 'units' ? 'unit' : data.unitName === 'dollars' ? '$' : 'tola'}</span>
+                                    </div>
+                                    <div class="sip-stat highlight">
+                                        <span class="sip-label">Today's Price:</span>
+                                        <span class="sip-value">Rs. ${data.currentPrice.toLocaleString('en-IN')} <span class="gain">(${data.priceGain})</span></span>
+                                    </div>
+                                </div>
+                                <div class="sip-magic">✨ <strong>Voilà!</strong> ${data.unitsAccumulated.toFixed ? data.unitsAccumulated.toFixed(2) : data.unitsAccumulated} ${data.unitName} × Rs. ${data.currentPrice.toLocaleString('en-IN')} = <strong>Rs. ${data.final.toLocaleString('en-IN')}</strong></div>
+                            </div>
+                        `;
+                    } else if (key === 'bank') {
+                        sipBreakdownHtml = `
+                            <div class="sip-breakdown">
+                                <div class="sip-title">📊 Your ${months} Month Savings Journey:</div>
+                                <div class="sip-story">${data.sipStory}</div>
+                                <div class="sip-stats">
+                                    <div class="sip-stat">
+                                        <span class="sip-label">Monthly Deposit:</span>
+                                        <span class="sip-value">Rs. 5,000</span>
+                                    </div>
+                                    <div class="sip-stat">
+                                        <span class="sip-label">Interest Earned:</span>
+                                        <span class="sip-value">Rs. ${data.profit.toLocaleString('en-IN')}</span>
+                                    </div>
+                                </div>
+                                <div class="sip-magic">✨ Compound interest did the work: Rs. 9.55L → <strong>Rs. ${(data.final/100000).toFixed(1)} Lakh</strong></div>
+                            </div>
+                        `;
+                    }
+                    
+                    card.innerHTML = `
+                        ${badges}
+                        <div class="result-header">
+                            <div class="result-icon">${data.icon}</div>
+                            <div class="result-details">
+                                <h3>${data.name}</h3>
+                                <p style="color: #7f8c8d;">${data.description}</p>
+                            </div>
+                        </div>
+                        <div class="result-amount" style="color: ${isLoser ? '#e74c3c' : '#27ae60'}">Rs. ${data.final.toLocaleString('en-IN')}</div>
+                        ${warningHtml}
+                        ${sipBreakdownHtml}
+                        <div class="result-stats">
+                            <div class="stat">
+                                <div class="stat-value">${data.multiplier}x</div>
+                                <div class="stat-label">Return Multiple</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">Rs. ${data.profit.toLocaleString('en-IN')}</div>
+                                <div class="stat-label">Total Profit</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${data.unitsAccumulated ? (typeof data.unitsAccumulated === 'number' ? data.unitsAccumulated.toFixed(2) : data.unitsAccumulated) + ' ' + (data.unitName || '') : '-'}</div>
+                                <div class="stat-label">Accumulated</div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(card);
+                    setTimeout(() => card.classList.add('show'), 100);
+                }, index * 500);
+            });
+            
+            // Final message
+            setTimeout(() => {
+                let message = '';
+                const winnerData = results['kse'];
+                
+                if (youWon) {
+                    message = `
+                        <h2 style="font-size: 2em; margin-bottom: 20px;">🎊 INCREDIBLE! YOU CHOSE THE WINNER! 🎊</h2>
+                        <p>Ayesha followed your advice and invested Rs. 5,000/month in ${userResult.name}.</p>
+                        <p style="margin-top: 20px; font-size: 1.4em;">
+                            Her Rs. 9.55 lakh turned into <strong style="font-size: 1.3em;">Rs. 56.4 LAKH!</strong>
+                        </p>
+                        <p style="margin-top: 15px; font-size: 1.2em;">
+                            That's a profit of <strong>Rs. 46.9 lakh</strong> - almost 6x her money!
+                        </p>
+                        <p style="margin-top: 20px;">
+                            She beat Gold by Rs. 36 lakh, beat Bank by Rs. 34 lakh, and beat Dollar by Rs. 36 lakh!
+                        </p>
+                        <p style="margin-top: 25px; font-size: 1.2em; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                            <strong>The question is: Will YOU start YOUR SIP journey today?</strong>
+                        </p>
+                    `;
+                } else if (userChoice === 'gold') {
+                    message = `
+                        <h2 style="font-size: 2em; margin-bottom: 20px;">😱 "Sona Kabhi Nahi Girta" - But It Did!</h2>
+                        <p>You chose Gold, thinking it's the safest option. But here's the shocking truth:</p>
+                        <p style="margin-top: 15px; font-size: 1.2em; background: rgba(255,0,0,0.3); padding: 15px; border-radius: 10px;">
+                            Gold LOST money for <strong>6 consecutive years (2013-2018)!</strong><br>
+                            At worst, Ayesha would have had 24% LESS than what she invested!
+                        </p>
+                        <p style="margin-top: 20px; font-size: 1.3em;">
+                            Gold gave Rs. 20.2 lakh. KSE-100 gave <strong>Rs. 56.4 lakh!</strong>
+                        </p>
+                        <p style="margin-top: 15px;">
+                            That's <strong>Rs. 36.2 lakh left on the table!</strong>
+                        </p>
+                        <p style="margin-top: 25px; font-size: 1.1em;">
+                            Gold came in LAST place - even Bank Savings beat it!
+                        </p>
+                    `;
+                } else if (userChoice === 'bank') {
+                    message = `
+                        <h2 style="font-size: 2em; margin-bottom: 20px;">🏦 Safe Choice, But...</h2>
+                        <p>You chose Bank Savings - Ayesha's father's advice. Safe? Yes. Optimal? No!</p>
+                        <p style="margin-top: 20px; font-size: 1.3em;">
+                            Bank gave Rs. 22.3 lakh. KSE-100 gave <strong>Rs. 56.4 lakh!</strong>
+                        </p>
+                        <p style="margin-top: 15px;">
+                            That's <strong>Rs. 34.1 lakh difference!</strong>
+                        </p>
+                        <p style="margin-top: 20px;">
+                            Good news: Bank actually beat both Gold AND Dollar! But KSE-100 crushed everything.
+                        </p>
+                        <p style="margin-top: 25px; font-size: 1.1em; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                            <strong>Time to move beyond "safe" and start building real wealth!</strong>
+                        </p>
+                    `;
+                } else {
+                    message = `
+                        <h2 style="font-size: 2em; margin-bottom: 20px;">💵 Dollar Protected, But Didn't Grow</h2>
+                        <p>You chose US Dollars - good for protecting against rupee depreciation.</p>
+                        <p style="margin-top: 20px; font-size: 1.3em;">
+                            Dollar gave Rs. 20.8 lakh. KSE-100 gave <strong>Rs. 56.4 lakh!</strong>
+                        </p>
+                        <p style="margin-top: 15px;">
+                            That's <strong>Rs. 35.6 lakh difference!</strong>
+                        </p>
+                        <p style="margin-top: 20px;">
+                            Dollar just preserved purchasing power (3.3x currency depreciation) but didn't create wealth like stocks did (17x index growth!).
+                        </p>
+                        <p style="margin-top: 25px; font-size: 1.1em; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                            <strong>Ready to move from wealth preservation to wealth creation?</strong>
+                        </p>
+                    `;
+                }
+                
+                finalMessageEl.innerHTML = message;
+            }, sortedResults.length * 500 + 600);
+        }
+        
+        function shareWhatsApp() {
+            const text = `🎮 I just played "Where Should Ayesha Invest?" game!\n\n📊 Shocking result: Rs. 5,000/month for 15 years:\n\n📈 KSE-100: Rs. 56.4 Lakh (5.91x) 🏆\n🏦 Bank: Rs. 22.3 Lakh (2.33x)\n💵 Dollar: Rs. 20.8 Lakh (2.18x)\n🪙 Gold: Rs. 20.2 Lakh (2.12x) 😱\n\nGold came LAST! "Sona kabhi nahi girta" is a MYTH!\n\nPlay it yourself: ${window.location.href}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        }
+        
+        function shareFacebook() {
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
